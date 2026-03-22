@@ -127,6 +127,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .metro-start:hover:not(.on){border-color:var(--accent);color:var(--accent);}
 
 /* Play 화면 */
+#play-cards{display:flex;flex-direction:column;flex:1;min-height:0;gap:var(--gap);width:100%;max-width:340px;}
+#ref-pitch-card{display:none;}
 #tm-tuner-note{font-family:'DM Mono',monospace;font-size:52px;color:var(--text);line-height:1;letter-spacing:-.02em;transition:color .15s;}
 #tm-tuner-note.tune{color:var(--green);}#tm-tuner-note.sharp,#tm-tuner-note.flat{color:var(--red);}
 #tuner-history-tm{width:100%;border-radius:8px;background:var(--bg);display:block;}
@@ -151,18 +153,54 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   #drum-section,#play-info,#pwrap,#stats-t,
   .timer-center{max-width:620px;}
 
-  /* Practice: 2컬럼 */
+  /* ── Practice: 왼쪽 튜너 전체높이, 오른쪽 위 타이머·아래 메트로놈 ── */
   #practice-screen .hrow,
   #practice-screen .sbar{max-width:620px;}
-  #practice-body{flex-direction:row;align-items:stretch;max-width:620px;}
-
-  /* 태블릿에서 아코디언 헤더 숨김 — 둘 다 항상 펼침 */
+  #practice-body{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:1fr 1fr;
+    max-width:620px;
+    height:0;flex:1;min-height:0;
+    gap:var(--gap);
+  }
+  #tuner-card{grid-column:1;grid-row:1/3;flex:unset;min-height:0;overflow:hidden;}
+  #tuner-card .sec-body{flex:1;min-height:0;}
+  #tuner-card .scard-inner{flex:1;min-height:0;}
+  #tuner-history{flex:1;min-height:0;height:0;}
+  #timer-card{grid-column:2;grid-row:1;flex:unset;display:flex;}
+  #metro-card{grid-column:2;grid-row:2;flex:unset;}
+  /* 타이머·튜너 아코디언 헤더 숨김, 항상 펼침 */
   #timer-hdr,#tuner-hdr{display:none;}
   #timer-body,#tuner-body{max-height:9999px!important;opacity:1!important;}
   #timer-body.shut,#tuner-body.shut{max-height:9999px!important;opacity:1!important;}
-  #timer-card{flex:1!important;min-width:0;}
-  #tuner-card{flex:2!important;min-width:0;}
-  #metro-card{flex:0 0 260px!important;}
+
+  /* ── Play: 왼쪽 튜너, 오른쪽 ref-pitch + 메트로놈 그리드 ── */
+  #play-cards{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto 1fr;
+    flex:1;min-height:0;
+    gap:var(--gap);
+    width:100%;max-width:620px;
+  }
+  #play-tuner-card{grid-column:1;grid-row:1/3;flex:unset;min-height:0;}
+  #play-tuner-card .scard-inner{height:100%;}
+  #ref-pitch-card{grid-column:2;grid-row:1;display:flex;flex:unset;}
+  #play-metro-card{grid-column:2;grid-row:2;flex:unset;}
+
+  /* ── 메트로놈 태블릿 레이아웃 ── */
+  .beat-vis-wrap{height:32px;gap:8px;}
+  .bd.beat{width:16px;height:16px;}
+  .bd.subdiv{width:9px;height:9px;}
+  .metro-bpm-row{flex-direction:column;align-items:center;gap:6px;}
+  .bpm-num-el{font-size:56px;min-width:unset;}
+  .metro-adj{width:100%;gap:6px;}
+  .tap-btn{flex:1;}
+  .metro-bottom{grid-template-columns:1fr;grid-template-rows:auto auto auto;}
+  .ts-grid{grid-template-columns:repeat(4,1fr);}
+  .sd-grid{grid-template-columns:repeat(4,1fr);}
+  .metro-start{grid-column:1;grid-row:3;padding:10px;}
 }
 
 /* ── iPad Pro 12.9" (1024px ~) ── */
@@ -172,8 +210,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   #drum-section,#play-info,#pwrap,#stats-t,
   .timer-center,#practice-body,
   #practice-screen .hrow,
-  #practice-screen .sbar{max-width:820px;}
-  #metro-card{flex:0 0 320px!important;}
+  #practice-screen .sbar,
+  #play-cards{max-width:820px;}
 }
 </style>
 </head>
@@ -388,7 +426,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <div style="display:flex;align-items:center"><div class="sdot" id="sdot-tm"></div><span class="stxt" id="stxt-tm">Listening...</span></div>
     <span class="notedisp" id="note-tm"></span>
   </div>
-  <div class="scard w" style="flex:1;min-height:0;">
+  <div id="play-cards">
+  <div class="scard w" id="play-tuner-card" style="flex:1;min-height:0;">
     <div class="scard-inner" style="height:100%;">
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div id="tm-tuner-note">--</div>
@@ -405,7 +444,35 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       </div>
     </div>
   </div>
-  <div class="scard w" style="flex-shrink:0;">
+  <div class="scard w" id="ref-pitch-card" style="flex-shrink:0;">
+    <div class="scard-inner">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+        <span style="font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;">Reference</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button class="adj-btn" style="flex:0 0 32px;height:32px;font-size:13px;" onclick="adjOctave(-1)">−</button>
+          <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text);">Oct&nbsp;<span id="ref-octave-num">4</span></span>
+          <button class="adj-btn" style="flex:0 0 32px;height:32px;font-size:13px;" onclick="adjOctave(1)">+</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">
+        <button class="seg" onclick="playRefNote('C')">C</button>
+        <button class="seg" onclick="playRefNote('D')">D</button>
+        <button class="seg" onclick="playRefNote('E')">E</button>
+        <button class="seg" onclick="playRefNote('F')">F</button>
+        <button class="seg" onclick="playRefNote('G')">G</button>
+        <button class="seg" onclick="playRefNote('A')">A</button>
+        <button class="seg" onclick="playRefNote('B')">B</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;">
+        <button class="seg" onclick="playRefNote('C#')">C#</button>
+        <button class="seg" onclick="playRefNote('D#')">D#</button>
+        <button class="seg" onclick="playRefNote('F#')">F#</button>
+        <button class="seg" onclick="playRefNote('G#')">G#</button>
+        <button class="seg" onclick="playRefNote('A#')">A#</button>
+      </div>
+    </div>
+  </div>
+  <div class="scard w" id="play-metro-card" style="flex-shrink:0;">
     <div class="scard-inner">
       <div class="beat-vis-wrap" id="beat-vis-tm"></div>
       <div class="metro-bpm-row">
@@ -432,6 +499,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         <button class="metro-start" id="metro-start-tm" onclick="toggleMetro()">Start<br>Metronome</button>
       </div>
     </div>
+  </div>
   </div>
   <div class="btn-row">
     <button class="btn danger" onclick="endSession()">닫기</button>
@@ -523,6 +591,7 @@ function goStart(){
   if(S.mode==='tools')setTimeout(()=>resizeTMCanvas(),50);
   if(S.mode!=='tools'){clearInterval(sessionTimer);sessionTimer=setInterval(()=>{if(!S.running||S.paused)return;S.elapsedSec++;if(S.strOK){S.totalSec++;S.streakSec++;}else{S.streakSec=0;}refreshUI();},1000);}
   navigator.wakeLock?.request('screen').then(wl=>A.wakeLock=wl).catch(()=>{});
+  A.micAC?.resume();
   startRaf();
 }
 function togglePause(w){
@@ -534,14 +603,11 @@ function endSession(){
   S.running=false;S.paused=false;S.strOK=false;S.holdFrames=0;
   clearInterval(sessionTimer);
   if(S.metroPlaying)stopMetro();
+  stopRefNote();
   ['timer-screen','practice-screen','tools-screen'].forEach(id=>document.getElementById(id).classList.add('hidden'));
   document.getElementById('home').classList.remove('hidden');
-  // 마이크 + 오디오 컨텍스트 완전 해제
-  A.micStream?.getTracks().forEach(t=>t.stop());
-  A.scriptProc?.disconnect();
-  A.micAC?.close();
-  A.micStream=null;A.micAC=null;A.analyserFFT=null;A.analyserTD=null;A.scriptProc=null;A.pcmPos=0;
-  S.micReady=false;updateHomeBtn();
+  // AudioContext 일시정지만 — 스트림·S.micReady 유지해서 홈에서 바로 시작 가능
+  A.micAC?.suspend();
   A.wakeLock?.release();A.wakeLock=null;
   stopRaf();
 }
@@ -621,6 +687,29 @@ function updateTunerUI(raw,noteId,centsId,hzId,hist,canvasId,tol){
 function setTol(v){S.tolCents=v;document.getElementById('tol-val').textContent='±'+v+' ¢';}
 function setTolTM(v){S.tolCentsTM=v;document.getElementById('tol-val-tm').textContent='±'+v+' ¢';}
 
+// ── 레퍼런스 피치 ──
+let _refOctave=4,_refOsc=null,_refGain=null;
+function playRefNote(note){
+  stopRefNote();
+  if(!A.micAC)return;
+  const midi=(['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'].indexOf(note))+(_refOctave+1)*12;
+  const freq=440*Math.pow(2,(midi-69)/12);
+  _refOsc=A.micAC.createOscillator();_refGain=A.micAC.createGain();
+  _refOsc.type='sine';_refOsc.frequency.value=freq;
+  _refOsc.connect(_refGain);_refGain.connect(A.micAC.destination);
+  _refGain.gain.setValueAtTime(.25,A.micAC.currentTime);
+  _refGain.gain.exponentialRampToValueAtTime(.001,A.micAC.currentTime+2.5);
+  _refOsc.start();_refOsc.stop(A.micAC.currentTime+2.5);
+  _refOsc.onended=()=>{_refOsc?.disconnect();_refGain?.disconnect();_refOsc=null;_refGain=null;};
+}
+function stopRefNote(){
+  if(_refOsc&&_refGain&&A.micAC){
+    try{_refGain.gain.cancelScheduledValues(A.micAC.currentTime);_refGain.gain.setValueAtTime(_refGain.gain.value,A.micAC.currentTime);_refGain.gain.exponentialRampToValueAtTime(.001,A.micAC.currentTime+.05);_refOsc.stop(A.micAC.currentTime+.05);}catch(e){}
+    _refOsc=null;_refGain=null;
+  }
+}
+function adjOctave(d){_refOctave=Math.max(2,Math.min(6,_refOctave+d));document.getElementById('ref-octave-num').textContent=_refOctave;}
+
 function drawHistory(hist,canvasId,tol){
   const canvas=document.getElementById(canvasId);if(!canvas||!canvas.width)return;
   const W=canvas.offsetWidth||canvas.width,H=canvas.offsetHeight||canvas.height;if(!W||!H)return;
@@ -629,14 +718,14 @@ function drawHistory(hist,canvasId,tol){
   const ppc=(W/2)/50;c.fillStyle=C.green+'28';c.fillRect(W/2-tol*ppc,0,tol*2*ppc,H);
   c.strokeStyle=C.border;c.lineWidth=.5;c.setLineDash([2,4]);c.beginPath();c.moveTo(W/2,0);c.lineTo(W/2,H);c.stroke();c.setLineDash([]);
   const N=CONFIG.tuner.histLen,rH=H/N;c.lineWidth=2;c.lineCap='round';c.lineJoin='round';
-  // 세그먼트별로 stroke() 호출해야 globalAlpha 페이드가 실제로 적용됨
+  // hist[0]=oldest=위, hist[N-1]=newest=아래, 아래가 진하고 위로 갈수록 흐림
   for(let i=0;i<N-1;i++){
     const v0=hist[i],v1=hist[i+1];if(v0===null||v1===null)continue;
     const y0=(i+.5)*rH,y1=(i+1.5)*rH;
     const x0=W/2+Math.max(-50,Math.min(50,v0))*ppc;
     const x1=W/2+Math.max(-50,Math.min(50,v1))*ppc;
     const inT=Math.abs(v0)<=tol;
-    c.globalAlpha=.15+((N-1-i)/N)*.85;
+    c.globalAlpha=.15+(i/(N-1))*.85;
     c.strokeStyle=inT?C.green:C.muted;
     c.beginPath();c.moveTo(x0,y0);c.lineTo(x1,y1);c.stroke();
   }c.globalAlpha=1;
