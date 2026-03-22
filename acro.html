@@ -472,6 +472,7 @@ async function toggleMic() {
 
 // ── 세션 ───────────────────────────────────
 let running=false, paused=false;
+let wakeLock = null;
 let strOK=false, detFreq=0, hold=0;
 let totalSec=0, sessSec=0, goalDone=false;
 let statsTimer=null, lastMs=Date.now(), animMs=0;
@@ -493,7 +494,15 @@ function startSession() {
   document.getElementById('pause-btn').classList.add('warn');
   refresh();
   clearInterval(statsTimer);
+  requestWakeLock();
   statsTimer=setInterval(()=>{ if(running&&!paused&&strOK){ sessSec++;totalSec++;refresh(); } },1000);
+}
+
+async function requestWakeLock() {
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+  } catch(e) {
+  }
 }
 
 function togglePause() {
