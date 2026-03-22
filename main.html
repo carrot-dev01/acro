@@ -29,7 +29,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .btn.accent{border-color:var(--accent);color:var(--accent);}.btn.danger{border-color:var(--red);color:var(--red);}.btn.warn{border-color:var(--accent);color:var(--accent);}.btn:disabled{opacity:.3;cursor:default;}
 
 /* ── 홈 ── */
-#title-block{width:100%;max-width:340px;margin-top:6rem;margin-bottom:3.4rem;}
+#title-block{width:100%;max-width:340px;margin-top:4rem;margin-bottom:2rem;}
 #title-main{font-family:'Playfair Display',serif;font-style:italic;font-size:32px;color:var(--accent);line-height:1;}
 #title-sub{font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:3px;}
 #model-badge{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:340px;}
@@ -553,7 +553,7 @@ function togglePSec(sec){
   applyPSec();
 }
 function applyPSec(instant=false){
-  if(window.matchMedia('(min-width:700px)').matches)return; // 태블릿은 CSS가 처리
+  if(_isTablet)return; // 태블릿은 CSS가 처리
   const tc=document.getElementById('tuner-card'),timc=document.getElementById('timer-card');
   const tb=document.getElementById('tuner-body'),timb=document.getElementById('timer-body');
   const th=document.getElementById('tuner-hdr'),timh=document.getElementById('timer-hdr');
@@ -705,7 +705,7 @@ function drawClock(ctx,size,elapsedSec,active){
   ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fillStyle=active?C.accent:C.muted;ctx.fill();ctx.beginPath();ctx.arc(cx,cy,1.8,0,Math.PI*2);ctx.fillStyle=C.bg;ctx.fill();
 }
 
-let _rafId=null;
+let _isTablet=window.matchMedia('(min-width:700px)').matches;
 function startRaf(){if(!_rafId){lastFrameMs=Date.now();_rafId=requestAnimationFrame(frame);}}
 function stopRaf(){if(_rafId){cancelAnimationFrame(_rafId);_rafId=null;}}
 
@@ -726,11 +726,11 @@ function frame(){
     if(!A.isClick){A.analyserTD.getFloatTimeDomainData(A.tdBuf);const raw=yin(A.tdBuf,A.sampleRate);if(S.mode==='practice')updateTunerUI(raw,'tuner-note-big','tuner-cents','tuner-hz',S.histData,'tuner-history',S.tolCents);else updateTunerUI(raw,'tm-tuner-note','tm-cents','tm-hz',S.histDataTM,'tuner-history-tm',S.tolCentsTM);}
   }
   drawClock(ctxT,220,S.animMs/1000,S.strOK);
-  const isTablet=window.matchMedia('(min-width:700px)').matches;
+  const isTablet=_isTablet;
   if(S.mode==='practice'&&(S.timerOpen||isTablet)&&ctxP)drawClock(ctxP,clockPSize,S.animMs/1000,S.strOK);
   if(S.running)_rafId=requestAnimationFrame(frame);else _rafId=null;
 }
-window.addEventListener('resize',()=>{resizePCanvases();resizeTMCanvas();if(S.running&&S.mode==='practice')applyPSec(true);});
+window.addEventListener('resize',()=>{_isTablet=window.matchMedia('(min-width:700px)').matches;resizePCanvases();resizeTMCanvas();if(S.running&&S.mode==='practice')applyPSec(true);});
 setTimeout(()=>{resizePCanvases();resizeTMCanvas();},200);
 lastFrameMs=Date.now();
 </script>
