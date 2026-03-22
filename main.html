@@ -29,7 +29,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .btn.accent{border-color:var(--accent);color:var(--accent);}.btn.danger{border-color:var(--red);color:var(--red);}.btn.warn{border-color:var(--accent);color:var(--accent);}.btn:disabled{opacity:.3;cursor:default;}
 
 /* ── 홈 ── */
-#title-block{width:100%;max-width:340px;margin-top:4rem;margin-bottom:2rem;}
+#title-block{width:100%;max-width:340px;margin-top:6rem;margin-bottom:3.4rem;}
 #title-main{font-family:'Playfair Display',serif;font-style:italic;font-size:32px;color:var(--accent);line-height:1;}
 #title-sub{font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:3px;}
 #model-badge{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:340px;}
@@ -324,7 +324,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       </div>
     </div>
     <!-- Tuner 카드 -->
-    <div class="scard" id="tuner-card" style="flex:2;">
+    <div class="scard" id="tuner-card" style="flex:2;min-height:180px;">
       <div class="sec-hdr open" id="tuner-hdr" onclick="togglePSec('tuner')">
         <span class="sh-title">Tuner</span><span class="sh-chev">▼</span>
       </div>
@@ -344,7 +344,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       </div>
     </div>
     <!-- Metronome 카드 -->
-    <div class="scard" id="metro-card" style="flex:0 0 auto;">
+    <div class="scard" id="metro-card" style="flex:0 1 auto;">
       <div class="scard-inner">
         <div class="beat-vis-wrap" id="beat-vis-p"></div>
         <div class="metro-bpm-row">
