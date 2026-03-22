@@ -745,15 +745,15 @@ document.addEventListener('visibilitychange',async()=>{if(S.running&&document.vi
 
 let tapTimes=[];
 // 붓점: 4분음표를 3등분 (♩. = ♩×1.5 = ♪×3)
-function getTickInterval(){const b=60/S.bpm;if(S.timeSig===6)return b/2;return S.subDiv==='d'?b/3:b/S.subDiv;}
-function getTotalTicks(){return S.subDiv==='d'?S.timeSig*3:S.timeSig*S.subDiv;}
+function getTickInterval(){const b=60/S.bpm;if(S.timeSig===6)return b/2;if(S.subDiv==='d')return A.metroTick%2===0?b*3/4:b*1/4;return b/S.subDiv;}
+function getTotalTicks(){return S.subDiv==='d'?S.timeSig*2:S.timeSig*S.subDiv;}
 function scheduleClick(time,tick){
   if(!A.micAC)return;const osc=A.micAC.createOscillator(),gain=A.micAC.createGain();osc.connect(gain);gain.connect(A.micAC.destination);
-  let freq,vol;if(S.subDiv==='d'){const b1=tick===0,bs=tick%3===0;freq=b1?1500:bs?1000:700;vol=b1?.6:bs?.38:.16;}else{const b1=tick===0,ib=tick%S.subDiv===0;freq=b1?1500:ib?1000:700;vol=b1?.6:ib?.38:.16;}
+  let freq,vol;if(S.subDiv==='d'){const b1=tick===0,bs=tick%2===0;freq=b1?1500:bs?1000:700;vol=b1?.6:bs?.38:.16;}else{const b1=tick===0,ib=tick%S.subDiv===0;freq=b1?1500:ib?1000:700;vol=b1?.6:ib?.38:.16;}
   gain.gain.setValueAtTime(vol,time);gain.gain.exponentialRampToValueAtTime(.001,time+.04);osc.frequency.value=freq;osc.onended=()=>{osc.disconnect();gain.disconnect();};osc.start(time);osc.stop(time+CONFIG.metro.clickDurS);
   const dl=Math.max(0,(time-A.micAC.currentTime)*1000);setTimeout(()=>litBeat(tick),dl);setTimeout(()=>{A.isClick=true;},dl-5);setTimeout(()=>{A.isClick=false;},dl+CONFIG.metro.muteTunerMs);
 }
-function metroSched(){while(A.metroNext<A.micAC.currentTime+CONFIG.metro.lookaheadS){scheduleClick(A.metroNext,A.metroTick);A.metroTick=(A.metroTick+1)%getTotalTicks();A.metroNext+=getTickInterval();}A.metroTimer=setTimeout(metroSched,CONFIG.metro.intervalMs);}
+function metroSched(){while(A.metroNext<A.micAC.currentTime+CONFIG.metro.lookaheadS){scheduleClick(A.metroNext,A.metroTick);A.metroNext+=getTickInterval();A.metroTick=(A.metroTick+1)%getTotalTicks();}A.metroTimer=setTimeout(metroSched,CONFIG.metro.intervalMs);}
 function startMetro(){if(!A.micAC)return;S.metroPlaying=true;A.metroTick=0;A.metroNext=A.micAC.currentTime+.05;metroSched();updateMetroBtn(true);buildBeatVis();}
 function stopMetro(){S.metroPlaying=false;clearTimeout(A.metroTimer);updateMetroBtn(false);document.querySelectorAll('.bd').forEach(d=>d.classList.remove('lit-a','lit-b','lit-s'));}
 function toggleMetro(){if(!A.micAC){toast('마이크를 먼저 켜주세요');return;}S.metroPlaying?stopMetro():startMetro();}
@@ -772,9 +772,9 @@ function setTS(v){
   buildBeatVis();if(S.metroPlaying){stopMetro();startMetro();}
 }
 function setSD(v){S.subDiv=v;document.querySelectorAll('[data-sd],[data-sd2]').forEach(b=>{const val=b.dataset.sd??b.dataset.sd2;if(val)b.classList.toggle('on',val===String(v));});buildBeatVis();if(S.metroPlaying){stopMetro();startMetro();}}
-function buildBeatVis(){['beat-vis-p','beat-vis-tm'].forEach(id=>{const wrap=document.getElementById(id);if(!wrap)return;wrap.innerHTML='';const total=getTotalTicks();for(let i=0;i<total;i++){const dot=document.createElement('div');dot.className='bd '+(S.subDiv==='d'?(i%3===0?'beat':'subdiv'):(i%S.subDiv===0?'beat':'subdiv'));dot.dataset.tick=i;wrap.appendChild(dot);}});}
+function buildBeatVis(){['beat-vis-p','beat-vis-tm'].forEach(id=>{const wrap=document.getElementById(id);if(!wrap)return;wrap.innerHTML='';const total=getTotalTicks();for(let i=0;i<total;i++){const dot=document.createElement('div');dot.className='bd '+(S.subDiv==='d'?(i%2===0?'beat':'subdiv'):(i%S.subDiv===0?'beat':'subdiv'));dot.dataset.tick=i;wrap.appendChild(dot);}});}
 buildBeatVis();
-function litBeat(tick){document.querySelectorAll('.bd').forEach(d=>{d.classList.remove('lit-a','lit-b','lit-s');if(+d.dataset.tick!==tick)return;if(tick===0)d.classList.add('lit-a');else d.classList.add((S.subDiv==='d'?tick%3===0:tick%S.subDiv===0)?'lit-b':'lit-s');});}
+function litBeat(tick){document.querySelectorAll('.bd').forEach(d=>{d.classList.remove('lit-a','lit-b','lit-s');if(+d.dataset.tick!==tick)return;if(tick===0)d.classList.add('lit-a');else d.classList.add((S.subDiv==='d'?tick%2===0:tick%S.subDiv===0)?'lit-b':'lit-s');});}
 function tapTempo(){const now=Date.now();tapTimes=tapTimes.filter(t=>now-t<CONFIG.metro.tapWindowMs);tapTimes.push(now);if(tapTimes.length>=2){const avg=tapTimes.slice(1).reduce((s,t,i)=>s+(t-tapTimes[i]),0)/(tapTimes.length-1);setBPM(Math.round(60000/avg));}}
 function setupBpmSwipe(id){const el=document.getElementById(id);if(!el)return;let sy=0,sb=0,sw=false;el.addEventListener('mousedown',e=>{sw=true;sy=e.clientY;sb=S.bpm;e.preventDefault();});window.addEventListener('mousemove',e=>{if(!sw)return;setBPM(sb+Math.round((sy-e.clientY)/CONFIG.metro.swipePxPerBpm));});window.addEventListener('mouseup',()=>{sw=false;});el.addEventListener('touchstart',e=>{sw=true;sy=e.touches[0].clientY;sb=S.bpm;},{passive:true});window.addEventListener('touchmove',e=>{if(!sw)return;setBPM(sb+Math.round((sy-e.touches[0].clientY)/CONFIG.metro.swipePxPerBpm));},{passive:true});window.addEventListener('touchend',()=>{sw=false;});}
 setupBpmSwipe('bpm-num');setupBpmSwipe('bpm-num-tm');
