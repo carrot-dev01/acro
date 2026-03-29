@@ -92,11 +92,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 /* 기준음 A= 드럼 피커 */
 #ref-row{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 #ref-lbl{font-size:10px;color:var(--muted);white-space:nowrap;letter-spacing:.06em;text-transform:uppercase;}
-#ref-drum-outer{position:relative;width:68px;height:28px;overflow:hidden;border-radius:6px;background:var(--surface2);cursor:ns-resize;user-select:none;touch-action:none;flex-shrink:0;border:.5px solid var(--border);}
-#ref-drum-outer::before,#ref-drum-outer::after{content:'';position:absolute;left:0;right:0;height:9px;z-index:2;pointer-events:none;}
+#ref-drum-outer{position:relative;width:72px;height:56px;overflow:hidden;border-radius:8px;background:var(--surface2);cursor:ns-resize;user-select:none;touch-action:none;flex-shrink:0;border:.5px solid var(--border);}
+#ref-drum-outer::before,#ref-drum-outer::after{content:'';position:absolute;left:0;right:0;height:20px;z-index:2;pointer-events:none;}
 #ref-drum-outer::before{top:0;background:linear-gradient(to bottom,var(--surface2) 20%,transparent);}
 #ref-drum-outer::after{bottom:0;background:linear-gradient(to top,var(--surface2) 20%,transparent);}
-#ref-drum-sel{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:28px;border-top:.5px solid var(--accent);border-bottom:.5px solid var(--accent);pointer-events:none;z-index:1;}
+#ref-drum-sel{position:absolute;left:4px;right:4px;top:50%;transform:translateY(-50%);height:28px;border-radius:6px;background:color-mix(in srgb,var(--accent) 12%,transparent);border:.5px solid var(--accent);pointer-events:none;z-index:1;}
 #ref-drum-inner{position:absolute;left:0;right:0;display:flex;flex-direction:column;align-items:center;will-change:transform;}
 .ref-drum-item{height:28px;width:100%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);user-select:none;flex-shrink:0;}
 .ref-drum-item.active{color:var(--accent);font-size:13px;font-weight:500;}
@@ -178,17 +178,36 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* 태블릿 */
-@media(min-width:700px){
-  #app{padding:.9rem 1rem;}
-  #app>.w,#hdr,#detect-bar,.card{max-width:700px;}
-  #main-body{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);flex:1;min-height:0;width:100%;max-width:700px;}
-  #tuner-card,#metro-card{max-width:none;}
-}
-@media(min-width:1000px){
-  #app>.w,#hdr,#detect-bar,.card,#main-body{max-width:900px;}
-}
+/* safe area */
+.screen-wrap{padding-bottom:max(.8rem,env(safe-area-inset-bottom));}
+#app{padding-bottom:max(.8rem,env(safe-area-inset-bottom));}
+
+/* 아이폰 가로 차단 */
 @media(orientation:landscape)and(max-height:500px){
   body::after{content:'화면을 세로로 돌려주세요';position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);font-size:14px;color:var(--muted);z-index:999;pointer-events:all;}
+}
+
+/* 태블릿 iPad Mini+ */
+@media(min-width:700px){
+  #app{padding:.9rem 1rem;}
+  #app>.w,#hdr,#detect-bar,.card{max-width:680px;}
+  #main-body{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);flex:1;min-height:0;width:100%;max-width:680px;}
+  #tuner-card,#metro-card{max-width:none;}
+  /* 메트로놈 넓은 레이아웃 */
+  #metro-bpm{font-size:60px;}
+  .bd.beat{width:16px;height:16px;}
+  .bd.subdiv{width:9px;height:9px;}
+  #beat-vis{gap:8px;height:22px;}
+  .m-seg{padding:10px 0;font-size:13px;}
+  .m-adj{height:52px;font-size:22px;}
+  #metro-play-btn{height:52px;font-size:28px;}
+  /* ref panel */
+  #ref-panel{max-width:680px;}
+}
+
+/* iPad Pro */
+@media(min-width:1000px){
+  #app>.w,#hdr,#detect-bar,.card,#main-body,#ref-panel{max-width:880px;}
 }
 </style>
 </head>
@@ -199,7 +218,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
   <div id="mic-popup">
     <div id="mic-popup-title">마이크 접근 필요</div>
     <div id="mic-popup-desc">튜너와 현악기 감지를 위해<br>마이크를 켜주세요</div>
-    <button id="mic-popup-btn" onclick="allowMic()">마이크 켜기</button>
+    <button id="mic-popup-btn" onclick="allowMic()" style="opacity:.5;">잠시만요...</button>
     <button id="mic-popup-cancel" onclick="closeMicPopup()">나중에</button>
   </div>
 </div>
@@ -442,6 +461,7 @@ window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{
 
 // ── AI 로딩 ──
 async function loadYamnet(){
+  showMicPopup(); // 앱 시작하자마자 팝업 표시
   try{
     let w=0;while(typeof tf==='undefined'&&w<10000){await new Promise(r=>setTimeout(r,200));w+=200;}
     A.yamnet=await tf.loadGraphModel('https://tfhub.dev/google/tfjs-model/yamnet/tfjs/1',{fromTFHub:true});
@@ -455,8 +475,10 @@ async function loadYamnet(){
     A.yamnetReady=true;
     document.getElementById('ai-status').textContent='기본모드';
   }
-  // AI 준비되면 팝업 표시
-  showMicPopup();
+  // AI 준비 완료 — 버튼 활성화
+  document.getElementById('mic-popup-btn').disabled=false;
+  document.getElementById('mic-popup-btn').textContent='마이크 켜기';
+  document.getElementById('mic-popup-btn').style.opacity='1';
 }
 loadYamnet();
 
@@ -583,11 +605,12 @@ function snapRefDrum(){
   S.refHz=Math.max(REF_MIN,Math.min(REF_MAX,refYToHz(refDrumY)));
   setRefDrumY(refHzToY(S.refHz),true);
 }
-refOuter.addEventListener('mousedown',e=>{refDrumDrag=true;refSY=e.clientY;refSDY=refDrumY;refInner.style.transition='none';e.preventDefault();});
-window.addEventListener('mousemove',e=>{if(!refDrumDrag)return;setRefDrumY(Math.max(refHzToY(REF_MAX),Math.min(refHzToY(REF_MIN),refSDY+(e.clientY-refSY))));});
+let _refLastY=0,_refLastT=0,_refVel=0;
+refOuter.addEventListener('mousedown',e=>{refDrumDrag=true;refSY=e.clientY;refSDY=refDrumY;_refLastY=e.clientY;_refLastT=Date.now();refInner.style.transition='none';e.preventDefault();});
+window.addEventListener('mousemove',e=>{if(!refDrumDrag)return;const now=Date.now(),dy=e.clientY-_refLastY;_refVel=dy/(now-_refLastT+1);_refLastY=e.clientY;_refLastT=now;setRefDrumY(Math.max(refHzToY(REF_MAX),Math.min(refHzToY(REF_MIN),refSDY+(e.clientY-refSY))));});
 window.addEventListener('mouseup',()=>{if(refDrumDrag){refDrumDrag=false;snapRefDrum();}});
-refOuter.addEventListener('touchstart',e=>{refDrumDrag=true;refSY=e.touches[0].clientY;refSDY=refDrumY;refInner.style.transition='none';},{passive:true});
-window.addEventListener('touchmove',e=>{if(!refDrumDrag)return;setRefDrumY(Math.max(refHzToY(REF_MAX),Math.min(refHzToY(REF_MIN),refSDY+(e.touches[0].clientY-refSY))));},{passive:true});
+refOuter.addEventListener('touchstart',e=>{refDrumDrag=true;refSY=e.touches[0].clientY;refSDY=refDrumY;_refLastY=e.touches[0].clientY;_refLastT=Date.now();refInner.style.transition='none';},{passive:true});
+window.addEventListener('touchmove',e=>{if(!refDrumDrag)return;const now=Date.now(),dy=e.touches[0].clientY-_refLastY;_refVel=dy/(now-_refLastT+1);_refLastY=e.touches[0].clientY;_refLastT=now;setRefDrumY(Math.max(refHzToY(REF_MAX),Math.min(refHzToY(REF_MIN),refSDY+(e.touches[0].clientY-refSY))));},{passive:true});
 window.addEventListener('touchend',()=>{if(refDrumDrag){refDrumDrag=false;snapRefDrum();}});
 setRefDrumY(refHzToY(S.refHz));setTimeout(()=>setRefDrumY(refHzToY(S.refHz)),30);
 
