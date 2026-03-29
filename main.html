@@ -723,7 +723,10 @@ function drawHistory(){
   if(canvas.width!==Math.round(W*dpr)){canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);canvas.style.width=W+'px';canvas.style.height=H+'px';}
   const c=canvas.getContext('2d'),C=getCss();
   c.save();c.scale(dpr,dpr);
-  c.clearRect(0,0,W,H);c.fillStyle=C.bg;c.fillRect(0,0,W,H);
+  c.clearRect(0,0,W,H);
+  const _inTune=document.getElementById('tuner-card').classList.contains('in-tune');
+  c.fillStyle=_inTune?C.green+'14':C.bg; // 14 = ~8% opacity in hex
+  c.fillRect(0,0,W,H);
   const ppc=(W/2)/50,tol=CFG.tuner.tolCents,N=S.histData.length,rH=H/N;
   c.fillStyle=C.green+'22';c.fillRect(W/2-tol*ppc,0,tol*2*ppc,H);
   c.strokeStyle=C.dim;c.lineWidth=.5;c.setLineDash([2,4]);c.beginPath();c.moveTo(W/2,0);c.lineTo(W/2,H);c.stroke();c.setLineDash([]);
@@ -890,14 +893,29 @@ function renderRecList(){
         <span class="rec-item-dur" style="font-size:10px;color:var(--muted);">${m}:${s}</span>
       </div>
       <div class="rec-item-detail" id="rec-detail-${idx}">
-        <audio id="rec-audio-${idx}" src="${item.url}" preload="none" style="width:100%;height:32px;border-radius:6px;" controls></audio>
-        <div class="rec-item-btns" style="margin-top:4px;">
+        <div class="rec-item-btns" style="margin-top:6px;">
+          <button class="rec-item-btn" id="rec-play-btn-${idx}" onclick="toggleRecPlay(${idx},this)">▶</button>
           <a class="rec-item-btn" href="${item.url}" download="gopractice_${item.name}.${_ext}" title="저장">⬇</a>
           <button class="rec-item-btn del" onclick="deleteRec(${idx})" title="삭제">🗑</button>
         </div>
       </div>`;
     list.appendChild(div);
   });
+}
+function toggleRecPlay(idx, btn){
+  if(_recAudio && !_recAudio.paused){
+    _recAudio.pause();
+    document.querySelectorAll('[id^="rec-play-btn-"]').forEach(b=>b.textContent='▶');
+    return;
+  }
+  if(_recAudio){_recAudio.pause();_recAudio=null;}
+  document.querySelectorAll('[id^="rec-play-btn-"]').forEach(b=>b.textContent='▶');
+  const a=new Audio(recItems[idx].url);
+  _recAudio=a;
+  a.play();
+  if(btn)btn.textContent='■';
+  a.onended=()=>{if(btn)btn.textContent='▶';_recAudio=null;};
+  a.onpause=()=>{if(btn&&!a.ended)btn.textContent='▶';};
 }
 function toggleRecItem(idx){
   const detail=document.getElementById('rec-detail-'+idx);
