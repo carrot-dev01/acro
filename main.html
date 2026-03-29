@@ -74,8 +74,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #tuner-note-left{display:flex;align-items:baseline;gap:6px;}
 #tuner-note{font-family:'DM Mono',monospace;font-size:72px;font-weight:500;line-height:1;letter-spacing:-.04em;transition:color .1s;color:var(--text);}
 #tuner-note.tune{color:var(--green);}
-#tuner-note.sharp{color:var(--red);}
-#tuner-note.flat{color:var(--blue);}
 #tuner-oct{font-family:'DM Mono',monospace;font-size:20px;color:var(--muted);align-self:flex-start;margin-top:12px;}
 #tuner-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;align-self:flex-end;padding-bottom:4px;}
 #tuner-cents{font-family:'DM Mono',monospace;font-size:18px;color:var(--muted);}
@@ -120,9 +118,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #metro-btn-row{display:flex;align-items:center;gap:6px;}
 .m-adj{flex:1;height:44px;background:transparent;border:.5px solid var(--border);border-radius:9px;color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;}
 .m-adj:hover{border-color:var(--accent);color:var(--accent);}
-#metro-play-btn{flex:1;height:44px;background:var(--accent);border:none;border-radius:9px;color:var(--bg);font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-#metro-play-btn:hover{background:var(--accent2);}
-#metro-play-btn.playing{background:transparent;border:1.5px solid var(--accent);color:var(--accent);}
+#metro-play-btn{flex:1;height:44px;background:transparent;border:.5px solid var(--border);border-radius:9px;color:var(--accent);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+#metro-play-btn:hover{border-color:var(--accent);}
+#metro-play-btn.playing{background:transparent;border:.5px solid var(--accent);color:var(--accent);}
 #metro-vol-row{display:flex;align-items:center;gap:8px;}
 .m-vol-lbl{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
 .m-grid{display:flex;gap:4px;}
@@ -687,7 +685,7 @@ function updateTunerUI(raw){
   const nEl=document.getElementById('tuner-note'),oEl=document.getElementById('tuner-oct'),cEl=document.getElementById('tuner-cents'),hEl=document.getElementById('tuner-hz');
   if(raw===-1){
     S.smoothFreq=-1;S.lockedMidi=-1;S.lockCount=0;
-    nEl.textContent='--';nEl.className='';oEl.textContent='';cEl.textContent='-- ¢';hEl.textContent='-- Hz';document.getElementById('tuner-card').classList.remove('in-tune');
+    nEl.textContent='';nEl.className='';oEl.textContent='';cEl.textContent='';hEl.textContent='';document.getElementById('tuner-card').classList.remove('in-tune');
     S.histData.push(null);S.histData.shift();drawGauge(null);drawHistory();return;
   }
   S.lastActivityMs=Date.now();
@@ -699,7 +697,7 @@ function updateTunerUI(raw){
   const refAdjusted=440*Math.pow(2,(midi-69)/12)*(S.refHz/440);
   const cents=Math.round(1200*Math.log2(freq/refAdjusted));
   const noteIdx=((midi%12)+12)%12,octave=Math.floor(midi/12)-1;
-  const cls=Math.abs(cents)<=CFG.tuner.tolCents?'tune':cents>0?'sharp':'flat';
+  const cls=Math.abs(cents)<=CFG.tuner.tolCents?'tune':'off';
   nEl.textContent=KR[noteIdx];nEl.className=cls;oEl.textContent=octave;
   document.getElementById('tuner-card').classList.toggle('in-tune',cls==='tune');
   cEl.textContent=(cents>0?'+':'')+cents+' ¢';hEl.textContent=Math.round(freq)+' Hz';
