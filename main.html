@@ -118,7 +118,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #metro-btn-row{display:flex;align-items:center;gap:6px;}
 .m-adj{flex:1;height:44px;background:transparent;border:.5px solid var(--border);border-radius:9px;color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;}
 .m-adj:hover{border-color:var(--accent);color:var(--accent);}
-#metro-play-btn{flex:1;height:44px;background:transparent;border:none;border-radius:9px;color:var(--accent);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+#metro-play-btn{flex:1;height:44px;background:transparent;border:.5px solid var(--border);border-radius:9px;color:var(--accent);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
 #metro-play-btn:hover{color:var(--accent2);}
 #metro-play-btn.playing{background:transparent;border:.5px solid var(--accent);color:var(--accent);}
 #metro-vol-row{display:flex;align-items:center;gap:8px;}
@@ -133,7 +133,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 /* ── 커스텀 오디오 플레이어 ── */
 .rec-player{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
 .rec-player-top{display:flex;align-items:center;gap:8px;}
-.rec-play-btn{width:36px;height:36px;background:transparent;border:.5px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s;}
+.rec-play-btn{width:36px;height:36px;background:transparent;border:none;border-radius:8px;color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s;}
 .rec-seek{flex:1;height:3px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;cursor:pointer;}
 .rec-seek::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);cursor:pointer;}
 .rec-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);white-space:nowrap;min-width:36px;text-align:right;}
