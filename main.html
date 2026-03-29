@@ -51,6 +51,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #mic-dot.on{background:var(--green);}
 #mic-txt{font-size:10px;color:var(--muted);}
 #rec-ind{display:none;align-items:center;gap:4px;}
+#rec-hdr-btn{padding:4px 9px;background:transparent;border:.5px solid var(--border);border-radius:7px;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;line-height:1;transition:all .15s;letter-spacing:.04em;display:flex;align-items:center;}
+
 #rec-ind.show{display:flex;}
 #rec-dot-h{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 1s infinite;}
 #rec-txt-h{font-family:'DM Mono',monospace;font-size:10px;color:var(--red);letter-spacing:.04em;}
@@ -61,7 +63,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 /* ── 카드 ── */
 .card{width:100%;max-width:360px;background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden;}
 .card-hdr{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:.5px solid var(--border);}
-.card-title{font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;}
+.card-title{font-size:11px;color:var(--text);letter-spacing:.08em;text-transform:uppercase;font-weight:500;}
 .card-body{padding:13px 16px;display:flex;flex-direction:column;gap:9px;}
 
 /* ── 튜너 ── */
@@ -123,7 +125,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #metro-vol-row{display:flex;align-items:center;gap:8px;}
 .m-vol-lbl{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
 .m-grid{display:flex;gap:4px;}
-.m-seg{flex:1;padding:7px 0;background:transparent;border:.5px solid var(--border);border-radius:8px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;text-align:center;transition:all .12s;}
+.m-seg{flex:1;padding:7px 0;background:transparent;border:.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:all .12s;}
 .m-seg:hover{border-color:var(--accent);color:var(--accent);}
 .m-seg.on{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent);}
 input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:3px;background:var(--border);border-radius:2px;outline:none;cursor:pointer;}
@@ -136,11 +138,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 #ref-panel{position:fixed;bottom:0;left:0;right:0;max-width:360px;margin:0 auto;background:var(--surface);border-top:.5px solid var(--border);border-radius:14px 14px 0 0;padding:16px;z-index:40;transform:translateY(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);}
 #ref-panel.open{transform:translateY(0);}
 .panel-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.panel-title{font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;}
+.panel-title{font-size:11px;color:var(--text);letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
 .panel-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:0 4px;}
 .ref-oct-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.ref-oct-btn{width:32px;height:32px;background:var(--surface2);border:.5px solid var(--border);border-radius:7px;color:var(--text);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-#ref-oct-num{font-family:'DM Mono',monospace;font-size:14px;color:var(--accent);min-width:20px;text-align:center;}
+.ref-oct-btn{width:32px;height:32px;background:var(--surface2);border:.5px solid var(--border);border-radius:7px;color:var(--text);font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+#ref-oct-num-ext,#ref-oct-num-menu{font-family:'DM Mono',monospace;font-size:14px;color:var(--accent);font-weight:600;min-width:20px;text-align:center;}
 
 /* ── 메뉴 ── */
 #menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;opacity:0;pointer-events:none;transition:opacity .2s;}
@@ -148,29 +150,32 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 #menu-panel{position:fixed;right:0;top:0;bottom:0;width:272px;background:var(--surface);border-left:.5px solid var(--border);display:flex;flex-direction:column;padding:16px;gap:16px;overflow-y:auto;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);}
 #menu-overlay.open #menu-panel{transform:translateX(0);}
 .menu-sec{display:flex;flex-direction:column;gap:8px;}
-.menu-sec-title{font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;padding-bottom:6px;border-bottom:.5px solid var(--border);}
+.menu-sec-title{font-size:11px;color:var(--text);letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding-bottom:6px;border-bottom:.5px solid var(--border);}
 .timer-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .timer-box{background:var(--surface2);border-radius:10px;padding:10px 12px;}
-.timer-lbl{font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;}
+.timer-lbl{font-size:10px;color:var(--text);letter-spacing:.06em;text-transform:uppercase;font-weight:500;margin-bottom:3px;}
 .timer-val{font-family:'DM Mono',monospace;font-size:22px;color:var(--text);}
-.menu-btn-sm{padding:8px 10px;background:var(--surface2);border:.5px solid var(--border);border-radius:8px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;text-align:center;width:100%;}
+.menu-btn-sm{padding:8px 10px;background:var(--surface2);border:.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;text-align:center;width:100%;}
 .menu-btn-sm:hover{border-color:var(--accent);color:var(--accent);}
 #rec-list{display:flex;flex-direction:column;gap:6px;}
-.rec-item{background:var(--surface2);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;}
+.rec-item{background:var(--surface2);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;cursor:pointer;}
+.rec-item-detail{display:none;margin-top:8px;}
+.rec-item-detail.open{display:flex;flex-direction:column;gap:6px;}
+audio{width:100%;height:36px;border-radius:6px;outline:none;}
 .rec-item-info{display:flex;justify-content:space-between;align-items:center;}
 .rec-item-name{font-family:'DM Mono',monospace;font-size:10px;color:var(--text);}
 .rec-item-dur{font-size:10px;color:var(--muted);}
-.rec-item-btns{display:flex;gap:4px;}
-.rec-item-btn{flex:1;padding:5px;background:transparent;border:.5px solid var(--border);border-radius:6px;color:var(--muted);font-size:10px;cursor:pointer;text-align:center;transition:all .12s;font-family:'Noto Sans KR',sans-serif;text-decoration:none;display:flex;align-items:center;justify-content:center;}
+.rec-item-btns{display:flex;gap:4px;margin-top:6px;}
+.rec-item-btn{flex:1;padding:6px;background:transparent;border:.5px solid var(--border);border-radius:6px;color:var(--muted);font-size:14px;cursor:pointer;text-align:center;transition:all .12s;text-decoration:none;display:flex;align-items:center;justify-content:center;}
 .rec-item-btn:hover{border-color:var(--accent);color:var(--accent);}
 .rec-item-btn.del:hover{border-color:var(--red);color:var(--red);}
 .menu-row{display:flex;align-items:center;justify-content:space-between;}
-.menu-item{font-size:13px;color:var(--text);}
-.menu-val{font-size:11px;color:var(--muted);}
-.menu-action{width:100%;padding:9px;background:var(--surface2);border:.5px solid var(--border);border-radius:8px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;text-align:center;}
+.menu-item{font-size:13px;color:var(--text);font-weight:500;}
+.menu-val{font-size:11px;color:var(--text);}
+.menu-action{width:100%;padding:9px;background:var(--surface2);border:.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;text-align:center;}
 .menu-action:hover{border-color:var(--accent);color:var(--accent);}
 /* 마이크 버튼 — 작게 */
-#mic-menu-btn{width:100%;padding:8px;background:transparent;border:.5px solid var(--border);border-radius:8px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;}
+#mic-menu-btn{width:100%;padding:8px;background:transparent;border:.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;}
 #mic-menu-btn:hover{border-color:var(--accent);color:var(--accent);}
 #mic-menu-btn.on{border-color:var(--red);color:var(--red);}
 
@@ -240,6 +245,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
       </div>
       <div id="mic-dot"></div>
       <span id="mic-txt">Mic off</span>
+      <button id="rec-hdr-btn" onclick="tbRec()"><span id="rec-hdr-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin-right:4px;vertical-align:middle;transition:background .2s;"></span><span>REC</span></button>
       <div id="rec-ind">
         <div id="rec-dot-h"></div>
         <span id="rec-txt-h">REC</span>
@@ -255,7 +261,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
     <!-- 튜너 -->
     <div class="card" id="tuner-card" style="flex:1;min-height:0;display:flex;flex-direction:column;">
       <div class="card-hdr">
-        <span class="card-title">튜너</span>
+        <span style="font-size:13px;color:var(--text);font-weight:600;letter-spacing:.06em;">TUNER</span>
         <div id="ref-row">
           <span id="ref-lbl">A =</span>
           <div id="ref-drum-outer">
@@ -287,7 +293,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
     <!-- 메트로놈 -->
     <div class="card metro-flash" id="metro-card">
       <div class="card-hdr">
-        <span class="card-title">메트로놈</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span id="metro-hdr-label" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text);font-weight:500;">♩ 80</span>
+        </div>
         <div id="beat-vis"></div>
       </div>
       <div class="card-body">
@@ -303,7 +311,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
               <button id="metro-play-btn" onclick="toggleMetro()">▶</button>
             </div>
             <div id="metro-vol-row">
-              <span class="m-vol-lbl">볼륨</span>
+              <span class="m-vol-lbl" style="font-size:13px;">🔈</span>
               <input type="range" id="metro-vol" min="0" max="1" step="0.05" value="0.7" oninput="setMetroVol(+this.value)">
             </div>
           </div>
@@ -335,7 +343,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
   <div class="ref-oct-row">
     <span style="font-size:10px;color:var(--muted);">옥타브</span>
     <button class="ref-oct-btn" onclick="adjRefOct(-1)">−</button>
-    <span id="ref-oct-num">4</span>
+    <span id="ref-oct-num-ext">4</span>
     <button class="ref-oct-btn" onclick="adjRefOct(1)">+</button>
   </div>
   <div class="m-grid" style="margin-bottom:6px;">
@@ -346,6 +354,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
     <button class="m-seg ref-note-btn" data-note="솔" onclick="playRef('솔')">솔</button>
     <button class="m-seg ref-note-btn" data-note="라" onclick="playRef('라')">라</button>
     <button class="m-seg ref-note-btn" data-note="시" onclick="playRef('시')">시</button>
+    <button class="m-seg ref-note-btn" data-note="도2" onclick="playRefHigh()">도↑</button>
   </div>
   <div class="m-grid">
     <button class="m-seg ref-note-btn" data-note="도♯" onclick="playRef('도♯')">도♯</button>
@@ -395,7 +404,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
         <div class="ref-oct-row" style="margin-bottom:0;">
           <span style="font-size:10px;color:var(--muted);">옥타브</span>
           <button class="ref-oct-btn" onclick="adjRefOct(-1)">−</button>
-          <span id="ref-oct-num">4</span>
+          <span id="ref-oct-num-menu">4</span>
           <button class="ref-oct-btn" onclick="adjRefOct(1)">+</button>
         </div>
         <div class="m-grid">
@@ -406,6 +415,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
           <button class="m-seg ref-note-btn" data-note="솔" onclick="playRef('솔')">솔</button>
           <button class="m-seg ref-note-btn" data-note="라" onclick="playRef('라')">라</button>
           <button class="m-seg ref-note-btn" data-note="시" onclick="playRef('시')">시</button>
+          <button class="m-seg ref-note-btn" data-note="도2" onclick="playRefHigh()">도↑</button>
         </div>
         <div class="m-grid">
           <button class="m-seg ref-note-btn" data-note="도♯" onclick="playRef('도♯')">도♯</button>
@@ -414,7 +424,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
           <button class="m-seg ref-note-btn" data-note="솔♯" onclick="playRef('솔♯')">솔♯</button>
           <button class="m-seg ref-note-btn" data-note="라♯" onclick="playRef('라♯')">라♯</button>
         </div>
-        <button onclick="stopRefNote()" style="padding:7px;background:transparent;border:.5px solid var(--border);border-radius:8px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;font-size:11px;cursor:pointer;text-align:center;width:100%;">소리 끄기</button>
+        <button id="ref-stop-btn" onclick="stopRefNoteBtn()" style="padding:7px;background:transparent;border:.5px solid var(--border);border-radius:8px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;font-size:11px;cursor:pointer;text-align:center;width:100%;">소리 끄기</button>
       </div>
     </div>
 
@@ -558,8 +568,9 @@ function toggleMicFromMenu(){
 function updateMicUI(){
   const dot=document.getElementById('mic-dot');
   const txt=document.getElementById('mic-txt');
-  if(S.micReady){dot.classList.add('on');if(txt)txt.textContent='Mic on';}
-  else{dot.classList.remove('on');if(txt)txt.textContent='Mic off';}
+  const rhb=document.getElementById('rec-hdr-btn');
+  if(S.micReady){dot.classList.add('on');if(txt)txt.textContent='Mic on';if(rhb)rhb.style.opacity='1';}
+  else{dot.classList.remove('on');if(txt)txt.textContent='Mic off';if(rhb)rhb.style.opacity='.35';}
   updateMicMenuBtn();
 }
 function updateMicMenuBtn(){
@@ -751,7 +762,7 @@ function startMetro(){if(!A.micAC){toast('마이크를 먼저 켜주세요');ret
 function stopMetro(){S.metroPlaying=false;clearTimeout(A.metroTimer);updateMetroBtn(false);document.querySelectorAll('.bd').forEach(d=>d.classList.remove('lit-a','lit-b','lit-s'));}
 function toggleMetro(){S.metroPlaying?stopMetro():startMetro();}
 function updateMetroBtn(on){const btn=document.getElementById('metro-play-btn');btn.textContent=on?'■':'▶';btn.classList.toggle('playing',on);}
-function setBPM(v){S.bpm=Math.max(CFG.metro.bpmMin,Math.min(CFG.metro.bpmMax,v));document.getElementById('metro-bpm').textContent=S.bpm;if(S.metroPlaying){clearTimeout(_bpmDebounce);_bpmDebounce=setTimeout(()=>{stopMetro();startMetro();},300);}}
+function setBPM(v){S.bpm=Math.max(CFG.metro.bpmMin,Math.min(CFG.metro.bpmMax,v));document.getElementById('metro-bpm').textContent=S.bpm;const hl=document.getElementById('metro-hdr-label');if(hl)hl.textContent='♩ '+S.bpm;if(S.metroPlaying){clearTimeout(_bpmDebounce);_bpmDebounce=setTimeout(()=>{stopMetro();startMetro();},300);}}
 function adjBPM(d){setBPM(S.bpm+d);}
 function setTS(v){
   S.timeSig=v;document.querySelectorAll('[data-ts]').forEach(b=>b.classList.toggle('on',+b.dataset.ts===v));
@@ -780,7 +791,19 @@ function toggleRefInline(){
   btn.textContent=isOpen?'닫기':'열기';
   if(!isOpen)stopRefNote();
 }
-function adjRefOct(d){A.refOctave=Math.max(2,Math.min(6,A.refOctave+d));document.getElementById('ref-oct-num').textContent=A.refOctave;}
+function playRefHigh(){
+  stopRefNote();if(!A.micAC)return;
+  const midi=0+(A.refOctave+2)*12; // 한 옥타브 위 도
+  const freq=S.refHz*Math.pow(2,(midi-69)/12);
+  A.refOsc=A.micAC.createOscillator();A.refGain=A.micAC.createGain();
+  A.refOsc.type='triangle';A.refOsc.frequency.value=freq;
+  A.refOsc.connect(A.refGain);A.refGain.connect(A.micAC.destination);
+  A.refGain.gain.setValueAtTime(.22,A.micAC.currentTime);
+  A.refOsc.start();
+  document.querySelectorAll('.ref-note-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.ref-note-btn[data-note="도2"]').forEach(b=>b.classList.add('on'));
+}
+function adjRefOct(d){A.refOctave=Math.max(2,Math.min(6,A.refOctave+d));document.querySelectorAll('#ref-oct-num-ext,#ref-oct-num-menu').forEach(el=>{if(el)el.textContent=A.refOctave;});}
 function playRef(name){
   stopRefNote();if(!A.micAC)return;
   const semi=KR_MIDI[name];if(semi===undefined)return;
@@ -794,6 +817,16 @@ function playRef(name){
   A.refGain.gain.setValueAtTime(.22,A.micAC.currentTime);
   A.refOsc.start();
   // 계속 재생 — stopRefNote()로 끄기
+}
+function stopRefNoteBtn(){
+  stopRefNote();
+  // 소리끄기 버튼 잠깐 하이라이트
+  ['ref-stop-btn','ref-stop-btn-ext'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.style.borderColor='var(--accent)';el.style.color='var(--accent)';
+    setTimeout(()=>{el.style.borderColor='';el.style.color='';},600);
+  });
 }
 function stopRefNote(){
   document.querySelectorAll('.ref-note-btn').forEach(b=>b.classList.remove('on'));
@@ -830,6 +863,8 @@ function startRec(){
   };
   A.recorder.start();A.recording=true;
   document.getElementById('rec-ind').classList.add('show');
+  const rhd=document.getElementById('rec-hdr-dot');if(rhd){rhd.style.background='var(--red)';rhd.style.animation='pulse 1s infinite';}
+
   document.getElementById('rec-toggle-btn').textContent='녹음 중지';
   document.getElementById('rec-toggle-btn').style.cssText='color:var(--red);border-color:var(--red);';
   toast('녹음 시작');
@@ -837,6 +872,8 @@ function startRec(){
 function stopRec(){
   A.recorder?.stop();A.recording=false;
   document.getElementById('rec-ind').classList.remove('show');
+  const rhd2=document.getElementById('rec-hdr-dot');if(rhd2){rhd2.style.background='var(--muted)';rhd2.style.animation='none';}
+
   document.getElementById('rec-toggle-btn').textContent='녹음 시작';
   document.getElementById('rec-toggle-btn').style.cssText='';
   toast('녹음 완료');
@@ -846,13 +883,33 @@ function renderRecList(){
   recItems.forEach((item,idx)=>{
     const div=document.createElement('div');div.className='rec-item';
     const m=Math.floor(item.dur/60),s=String(item.dur%60).padStart(2,'0');
-    div.innerHTML=`<div class="rec-item-info"><span class="rec-item-name">${item.name}</span><span class="rec-item-dur">${m}:${s}</span></div><div class="rec-item-btns"><button class="rec-item-btn" onclick="playRec(${idx})">재생</button><a class="rec-item-btn" href="${item.url}" download="gopractice_${item.name}.webm">저장</a><button class="rec-item-btn del" onclick="deleteRec(${idx})">삭제</button></div>`;
+    const _ext=item.mime&&item.mime.includes('mp4')?'m4a':'webm';
+    div.innerHTML=`
+      <div class="rec-item-info" onclick="toggleRecItem(${idx})" style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="rec-item-name" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text);">${item.name}</span>
+        <span class="rec-item-dur" style="font-size:10px;color:var(--muted);">${m}:${s}</span>
+      </div>
+      <div class="rec-item-detail" id="rec-detail-${idx}">
+        <audio id="rec-audio-${idx}" src="${item.url}" controls preload="none"></audio>
+        <div class="rec-item-btns">
+          <a class="rec-item-btn" href="${item.url}" download="gopractice_${item.name}.${_ext}" title="저장">⬇</a>
+          <button class="rec-item-btn del" onclick="deleteRec(${idx})" title="삭제">🗑</button>
+        </div>
+      </div>`;
     list.appendChild(div);
   });
 }
-let _recAudio=null;
-function playRec(idx){if(_recAudio){_recAudio.pause();_recAudio=null;}const a=new Audio(recItems[idx].url);_recAudio=a;a.play();}
-function deleteRec(idx){URL.revokeObjectURL(recItems[idx].url);recItems.splice(idx,1);renderRecList();}
+function toggleRecItem(idx){
+  const detail=document.getElementById('rec-detail-'+idx);
+  if(!detail)return;
+  detail.classList.toggle('open');
+}
+function deleteRec(idx){
+  // 재생 중이면 정지
+  const aud=document.getElementById('rec-audio-'+idx);
+  if(aud)aud.pause();
+  URL.revokeObjectURL(recItems[idx].url);recItems.splice(idx,1);renderRecList();
+}
 
 // ── 메뉴 ──
 function toggleMenu(){
