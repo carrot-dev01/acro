@@ -559,8 +559,9 @@ function closeMic(){
   A.micStream=null;A.micAC=null;A.analyserFFT=null;A.analyserTD=null;A.scriptProc=null;A.pcmPos=0;
   A.wakeLock?.release();A.wakeLock=null;
   stopRaf();stopSessionTimer();updateMicUI();setDetectFill(false);
-  document.getElementById('tuner-note').textContent='--';document.getElementById('tuner-note').className='';
-  document.getElementById('tuner-oct').textContent='';document.getElementById('tuner-cents').textContent='-- ¢';document.getElementById('tuner-hz').textContent='-- Hz';
+  document.getElementById('tuner-note').textContent='';document.getElementById('tuner-note').className='';
+  document.getElementById('tuner-oct').textContent='';document.getElementById('tuner-cents').textContent='';document.getElementById('tuner-hz').textContent='';
+  document.getElementById('tuner-card').classList.remove('in-tune');
   const _ws2=document.getElementById('wakelock-status');if(_ws2)_ws2.textContent='꺼짐';
   drawGauge(null);
 }
@@ -702,7 +703,6 @@ function updateTunerUI(raw){
   if(corrMidi===S.lockedMidi){S.smoothFreq=S.smoothFreq===-1?raw:S.smoothFreq+(raw-S.smoothFreq)*CFG.tuner.smoothing;}
   else{S.lockCount++;if(S.lockCount>=CFG.tuner.lockFrames){S.lockedMidi=corrMidi;S.lockCount=0;S.smoothFreq=raw;}else if(S.smoothFreq===-1)S.smoothFreq=raw;}
   const freq=S.smoothFreq,midi=Math.round(12*Math.log2(freq/440))+69;
-  const targetFreq=S.refHz*Math.pow(2,(midi-69)/12)*(440/440);
   const refAdjusted=440*Math.pow(2,(midi-69)/12)*(S.refHz/440);
   const cents=Math.round(1200*Math.log2(freq/refAdjusted));
   const noteIdx=((midi%12)+12)%12,octave=Math.floor(midi/12)-1;
