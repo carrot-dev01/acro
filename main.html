@@ -51,11 +51,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #mic-dot.on{background:var(--green);}
 #mic-txt{font-size:10px;color:var(--muted);}
 #rec-ind{display:none;align-items:center;gap:4px;}
-#rec-hdr-btn{padding:4px 9px;background:transparent;border:.5px solid var(--border);border-radius:7px;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;line-height:1;transition:all .15s;letter-spacing:.04em;display:flex;align-items:center;}
+#rec-hdr-btn{padding:4px 9px;background:transparent;border:1px solid var(--border);border-radius:7px;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;line-height:1;transition:border-color .2s,color .2s;letter-spacing:.04em;display:flex;align-items:center;}
+#rec-hdr-btn.rec-on{border-color:var(--red);color:var(--red);animation:recpulse 1s infinite;}
+@keyframes recpulse{0%,100%{opacity:1}50%{opacity:.45}}
 
 #rec-ind.show{display:flex;}
-#rec-dot-h{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 1s infinite;}
-#rec-txt-h{font-family:'DM Mono',monospace;font-size:10px;color:var(--red);letter-spacing:.04em;}
 #menu-btn{padding:4px 8px;background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;}
 
 /* ── 감지 바 ── */
@@ -67,7 +67,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .card-body{padding:13px 16px;display:flex;flex-direction:column;gap:9px;}
 
 /* ── 튜너 ── */
-#tuner-card{flex:1;min-height:0;display:flex;flex-direction:column;}
+#tuner-card{flex:1;min-height:0;display:flex;flex-direction:column;transition:box-shadow .3s,border-color .3s;}
+#tuner-card.in-tune{border-color:var(--green)!important;box-shadow:0 0 0 2px var(--green),inset 0 0 40px color-mix(in srgb,var(--green) 8%,transparent);}
 #tuner-card .card-body{flex:1;min-height:0;}
 #tuner-note-row{display:flex;align-items:baseline;justify-content:space-between;}
 #tuner-note-left{display:flex;align-items:baseline;gap:6px;}
@@ -245,11 +246,7 @@ audio{width:100%;height:36px;border-radius:6px;outline:none;}
       </div>
       <div id="mic-dot"></div>
       <span id="mic-txt">Mic off</span>
-      <button id="rec-hdr-btn" onclick="tbRec()"><span id="rec-hdr-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin-right:4px;vertical-align:middle;transition:background .2s;"></span><span>REC</span></button>
-      <div id="rec-ind">
-        <div id="rec-dot-h"></div>
-        <span id="rec-txt-h">REC</span>
-      </div>
+      <button id="rec-hdr-btn" onclick="tbRec()">REC</button>
       <button id="menu-btn" onclick="toggleMenu()">≡</button>
     </div>
   </div>
@@ -690,7 +687,7 @@ function updateTunerUI(raw){
   const nEl=document.getElementById('tuner-note'),oEl=document.getElementById('tuner-oct'),cEl=document.getElementById('tuner-cents'),hEl=document.getElementById('tuner-hz');
   if(raw===-1){
     S.smoothFreq=-1;S.lockedMidi=-1;S.lockCount=0;
-    nEl.textContent='--';nEl.className='';oEl.textContent='';cEl.textContent='-- ¢';hEl.textContent='-- Hz';
+    nEl.textContent='--';nEl.className='';oEl.textContent='';cEl.textContent='-- ¢';hEl.textContent='-- Hz';document.getElementById('tuner-card').classList.remove('in-tune');
     S.histData.push(null);S.histData.shift();drawGauge(null);drawHistory();return;
   }
   S.lastActivityMs=Date.now();
@@ -704,6 +701,7 @@ function updateTunerUI(raw){
   const noteIdx=((midi%12)+12)%12,octave=Math.floor(midi/12)-1;
   const cls=Math.abs(cents)<=CFG.tuner.tolCents?'tune':cents>0?'sharp':'flat';
   nEl.textContent=KR[noteIdx];nEl.className=cls;oEl.textContent=octave;
+  document.getElementById('tuner-card').classList.toggle('in-tune',cls==='tune');
   cEl.textContent=(cents>0?'+':'')+cents+' ¢';hEl.textContent=Math.round(freq)+' Hz';
   S.histData.push(cents);S.histData.shift();
   drawGauge(cents);drawHistory();
@@ -825,7 +823,7 @@ function stopRefNoteBtn(){
     const el=document.getElementById(id);
     if(!el)return;
     el.style.borderColor='var(--accent)';el.style.color='var(--accent)';
-    setTimeout(()=>{el.style.borderColor='';el.style.color='';},600);
+    setTimeout(()=>{el.style.borderColor='';el.style.color='';},350);
   });
 }
 function stopRefNote(){
@@ -862,8 +860,7 @@ function startRec(){
     recItems.unshift({url,name,dur,blob,mime:A.recorder.mimeType});renderRecList();
   };
   A.recorder.start();A.recording=true;
-  document.getElementById('rec-ind').classList.add('show');
-  const rhd=document.getElementById('rec-hdr-dot');if(rhd){rhd.style.background='var(--red)';rhd.style.animation='pulse 1s infinite';}
+  const rb=document.getElementById('rec-hdr-btn');if(rb)rb.classList.add('rec-on');
 
   document.getElementById('rec-toggle-btn').textContent='녹음 중지';
   document.getElementById('rec-toggle-btn').style.cssText='color:var(--red);border-color:var(--red);';
@@ -871,8 +868,7 @@ function startRec(){
 }
 function stopRec(){
   A.recorder?.stop();A.recording=false;
-  document.getElementById('rec-ind').classList.remove('show');
-  const rhd2=document.getElementById('rec-hdr-dot');if(rhd2){rhd2.style.background='var(--muted)';rhd2.style.animation='none';}
+  const rb2=document.getElementById('rec-hdr-btn');if(rb2)rb2.classList.remove('rec-on');
 
   document.getElementById('rec-toggle-btn').textContent='녹음 시작';
   document.getElementById('rec-toggle-btn').style.cssText='';
@@ -890,8 +886,8 @@ function renderRecList(){
         <span class="rec-item-dur" style="font-size:10px;color:var(--muted);">${m}:${s}</span>
       </div>
       <div class="rec-item-detail" id="rec-detail-${idx}">
-        <audio id="rec-audio-${idx}" src="${item.url}" controls preload="none"></audio>
-        <div class="rec-item-btns">
+        <audio id="rec-audio-${idx}" src="${item.url}" preload="none" style="width:100%;height:32px;border-radius:6px;" controls></audio>
+        <div class="rec-item-btns" style="margin-top:4px;">
           <a class="rec-item-btn" href="${item.url}" download="gopractice_${item.name}.${_ext}" title="저장">⬇</a>
           <button class="rec-item-btn del" onclick="deleteRec(${idx})" title="삭제">🗑</button>
         </div>
