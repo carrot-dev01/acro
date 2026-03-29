@@ -424,22 +424,24 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
           <button class="ref-oct-btn" onclick="adjRefOct(1)">+</button>
         </div>
       </div>
-      <div class="ref-note-grid" style="margin-bottom:7px;">
-        <button class="m-seg ref-note-btn" data-note="도" onclick="playRef('도')">도</button>
-        <button class="m-seg ref-note-btn" data-note="레" onclick="playRef('레')">레</button>
-        <button class="m-seg ref-note-btn" data-note="미" onclick="playRef('미')">미</button>
-        <button class="m-seg ref-note-btn" data-note="파" onclick="playRef('파')">파</button>
-        <button class="m-seg ref-note-btn" data-note="솔" onclick="playRef('솔')">솔</button>
-        <button class="m-seg ref-note-btn" data-note="라" onclick="playRef('라')">라</button>
-        <button class="m-seg ref-note-btn" data-note="시" onclick="playRef('시')">시</button>
-        <button class="m-seg ref-note-btn" data-note="도2" onclick="playRefHigh()">도↑</button>
-      </div>
-      <div class="ref-note-grid">
-        <button class="m-seg ref-note-btn" data-note="도♯" onclick="playRef('도♯')">도♯</button>
-        <button class="m-seg ref-note-btn" data-note="레♯" onclick="playRef('레♯')">레♯</button>
-        <button class="m-seg ref-note-btn" data-note="파♯" onclick="playRef('파♯')">파♯</button>
-        <button class="m-seg ref-note-btn" data-note="솔♯" onclick="playRef('솔♯')">솔♯</button>
-        <button class="m-seg ref-note-btn" data-note="라♯" onclick="playRef('라♯')">라♯</button>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="ref-note-grid">
+          <button class="m-seg ref-note-btn" data-note="도" onclick="playRef('도')">도</button>
+          <button class="m-seg ref-note-btn" data-note="레" onclick="playRef('레')">레</button>
+          <button class="m-seg ref-note-btn" data-note="미" onclick="playRef('미')">미</button>
+          <button class="m-seg ref-note-btn" data-note="파" onclick="playRef('파')">파</button>
+          <button class="m-seg ref-note-btn" data-note="솔" onclick="playRef('솔')">솔</button>
+          <button class="m-seg ref-note-btn" data-note="라" onclick="playRef('라')">라</button>
+          <button class="m-seg ref-note-btn" data-note="시" onclick="playRef('시')">시</button>
+          <button class="m-seg ref-note-btn" data-note="도2" onclick="playRefHigh()">도↑</button>
+        </div>
+        <div class="ref-note-grid">
+          <button class="m-seg ref-note-btn" data-note="도♯" onclick="playRef('도♯')">도♯</button>
+          <button class="m-seg ref-note-btn" data-note="레♯" onclick="playRef('레♯')">레♯</button>
+          <button class="m-seg ref-note-btn" data-note="파♯" onclick="playRef('파♯')">파♯</button>
+          <button class="m-seg ref-note-btn" data-note="솔♯" onclick="playRef('솔♯')">솔♯</button>
+          <button class="m-seg ref-note-btn" data-note="라♯" onclick="playRef('라♯')">라♯</button>
+        </div>
       </div>
     </div>
 
@@ -534,7 +536,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 const CFG={
   detect:{fftSize:4096,fftSmooth:.88,hzMin:80,hzMax:4800,noiseFloor:-52,peakMargin:4,harmonicDrop:35,harmonicMin:2,holdFrames:60},
   yamnet:{intervalMs:975,threshold:.50,sampleRate:16000,inputLen:15600,stringIdx:new Set([132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147])},
-  tuner:{fftSize:4096,yinThreshold:.10,rmsMin:.005,lockFrames:2,smoothing:.18,histLen:180,tolCents:10},
+  tuner:{fftSize:4096,yinThreshold:.10,rmsMin:.005,lockFrames:2,smoothing:.18,histLen:360,tolCents:10},
   metro:{bpmMin:20,bpmMax:220,lookaheadS:.4,intervalMs:25,clickDurS:.05,muteTunerMs:70,swipePxPerBpm:2},
   inactiveMs:15*60*1000,refMin:432,refMax:448,refDefault:442,
 };
