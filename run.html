@@ -637,7 +637,14 @@ function toggleTimer(){
     btn.textContent='정지';btn.classList.add('active');
   }else{clearInterval(_sessInt);btn.textContent='시작';btn.classList.remove('active');}
 }
-function resetTimer(){S.elapsedSec=0;S.detectedSec=0;document.getElementById('timer-elapsed').textContent='00:00';document.getElementById('timer-detected').textContent='00:00';}
+function resetTimer(){
+  clearInterval(_sessInt);
+  S.timerRunning=false;S.elapsedSec=0;S.detectedSec=0;
+  const tb=document.getElementById('timer-toggle-btn');
+  if(tb){tb.textContent='시작';tb.classList.remove('active');}
+  document.getElementById('timer-elapsed').textContent='00:00';
+  document.getElementById('timer-detected').textContent='00:00';
+}
 function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
 
 // ── REC 헤더 시간 ──
@@ -952,9 +959,10 @@ function renderRecList(){
     const div=document.createElement('div');div.className='rec-item';
     const m=Math.floor(item.dur/60),s=String(item.dur%60).padStart(2,'0');
     const _ext=item.mime&&item.mime.includes('mp4')?'m4a':'webm';
+    // item.name은 textContent로만 삽입 (XSS 방지)
     div.innerHTML=`
       <div onclick="toggleRecItem(${idx})" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
-        <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text);font-weight:500;">${item.name}</span>
+        <span class="rec-item-name" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text);font-weight:500;"></span>
         <span style="font-size:13px;color:var(--muted);">${m}:${s}</span>
       </div>
       <div class="rec-item-detail${defaultOpen?' open':''}" id="rec-detail-${idx}">
@@ -966,11 +974,16 @@ function renderRecList(){
           </div>
           <div class="rec-item-btns">
             <button class="rec-item-btn" onclick="openEditor(${idx})" style="font-size:12px;font-weight:700;letter-spacing:.04em;">편집</button>
-            <a class="rec-item-btn" href="${item.url}" download="gopractice_${item.name}.${_ext}" style="font-size:12px;font-weight:700;letter-spacing:.04em;">다운로드</a>
+            <a class="rec-item-btn rec-dl-link" href="${item.url}" style="font-size:12px;font-weight:700;letter-spacing:.04em;">다운로드</a>
             <button class="rec-item-btn del" onclick="deleteRec(${idx})">🗑</button>
           </div>
         </div>
       </div>`;
+    // textContent로 안전하게 파일명 삽입
+    div.querySelector('.rec-item-name').textContent=item.name;
+    // download 속성도 별도로 설정 (파일명 인젝션 방지)
+    const dlLink=div.querySelector('.rec-dl-link');
+    dlLink.download='gopractice_'+item.name+'.'+_ext;
     return div;
   };
 
@@ -1472,6 +1485,7 @@ function setWakeLock(v){
 }
 function setAiMode(v){
   _aiModeEnabled=v===1;
+  if(!_aiModeEnabled){S.yamnetOK=false;S.holdFrames=0;S.strOK=false;}
   document.querySelectorAll('#aimode-steps .step-btn').forEach(b=>b.classList.toggle('on',+b.dataset.v===v));
   saveSettings();
 }
