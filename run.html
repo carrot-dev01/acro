@@ -747,8 +747,9 @@ function drawHistory(){
   c.strokeStyle='rgba(255,255,255,.06)';c.lineWidth=.5;c.setLineDash([2,4]);
   c.beginPath();c.moveTo(W/2,0);c.lineTo(W/2,H);c.stroke();c.setLineDash([]);
   c.lineWidth=2.5;c.lineCap='round';
+  const segH=H/CFG.tuner.histLen;
   for(let i=0;i<N-1;i++){
-    const N=S.histData.length, segH=H/CFG.tuner.histLen;
+    const v0=S.histData[i],v1=S.histData[i+1];if(v0===null||v1===null)continue;
     const y0=H-(N-i-0.5)*segH, y1=H-(N-i-1.5)*segH;
     const x0=W/2+Math.max(-50,Math.min(50,v0))*ppc;
     const x1=W/2+Math.max(-50,Math.min(50,v1))*ppc;
