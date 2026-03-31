@@ -521,7 +521,7 @@ const CFG={
   detect:{fftSize:4096,fftSmooth:.88,hzMin:80,hzMax:4800,noiseFloor:-30,peakMargin:4,harmonicDrop:35,harmonicMin:3,holdFrames:80},
   yamnet:{intervalMs:975,threshold:.50,sampleRate:16000,inputLen:15600,stringIdx:new Set([132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147])},
   // [변경] rmsMin: .005 → .025 (기본 감도 보수적으로), lockFrames: 2 → 6 (왔다갔다 감소)
-  tuner:{fftSize:4096,yinThreshold:.10,rmsMin:.025,lockFrames:6,smoothing:.1,histLen:480,tolCents:10},
+  tuner:{fftSize:4096,yinThreshold:.10,rmsMin:.025,lockFrames:6,smoothing:.1,histLen:360,tolCents:10},
   metro:{bpmMin:20,bpmMax:220,lookaheadS:.4,intervalMs:25,clickDurS:.05,muteTunerMs:70,swipePxPerBpm:2},
   inactiveMs:15*60*1000,refMin:432,refMax:448,refDefault:442,
 };
