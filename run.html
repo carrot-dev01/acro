@@ -517,8 +517,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 <script>
 'use strict';
 const CFG={
-  // [변경] noiseFloor: -52 → -30 (주변 소음 차단 강화)
-  detect:{fftSize:4096,fftSmooth:.88,hzMin:80,hzMax:4800,noiseFloor:-30,peakMargin:4,harmonicDrop:35,harmonicMin:2,holdFrames:80},
+  // [변경] noiseFloor: -52 → -35 (주변 소음 차단 강화)
+  detect:{fftSize:4096,fftSmooth:.88,hzMin:80,hzMax:4800,noiseFloor:-35,peakMargin:4,harmonicDrop:35,harmonicMin:2,holdFrames:80},
   yamnet:{intervalMs:975,threshold:.50,sampleRate:16000,inputLen:15600,stringIdx:new Set([132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147])},
   // [변경] rmsMin: .005 → .025 (기본 감도 보수적으로), lockFrames: 2 → 6 (왔다갔다 감소)
   tuner:{fftSize:4096,yinThreshold:.10,rmsMin:.025,lockFrames:6,smoothing:.1,histLen:480,tolCents:10},
